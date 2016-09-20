@@ -6,9 +6,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,14 +24,15 @@ public class MovieRepository {
 
     @PostConstruct
     private void loadMovies() throws URISyntaxException, IOException {
-        movies = Files.lines(moviesCsvFile.getFile().toPath())
+        BufferedReader reader = new BufferedReader(new InputStreamReader(moviesCsvFile.getInputStream()));
+        movies = reader.lines()
                 .skip(1)
                 .map(line -> new Movie(line))
                 .collect(Collectors.toList());
     }
 
     public List<Movie> getMovies() {
-        return movies;
+        return new ArrayList<>(movies);
     }
 
 
